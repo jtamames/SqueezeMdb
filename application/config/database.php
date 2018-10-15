@@ -84,7 +84,7 @@ $db['default'] = array(
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
-	'cachedir' => '/Users/luis/Sites/game/application/cache/',
+	'cachedir' => '/var/www/html/SqueezeMdb/application/cache/',
 	'char_set' => 'utf8',
 	'dbcollat' => 'utf8_general_ci',
 	'swap_pre' => '',
