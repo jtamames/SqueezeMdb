@@ -1,0 +1,35 @@
+    {
+    "Gene": {
+        "ORF" : {"col": "ORF","type": "string"},
+        "name" : {"col": "name","type": "string"},
+        "taxonomy" : {"col": "taxonomy","type": "string"},
+        "GC per" : {"col": "gc_per","type" : "numeric"},
+        "KEGG ID" : {"col": "KEGG_id","type" :"string"},
+        "KEGG Function" : {"col": "KEGG_function","type" : "string"},
+        "KEGG Pathway" : {"col": "KEGG_pathway","type" : "string"},
+        "Cog ID" : {"col": "COG_id","type": "string"},
+        "Cog Function" : {"col": "COG_function","type" : "string"},
+        "Cog Pathway" : {"col": "COG_pathway","type":"string"},
+        "Pfam" : {"col": "Pfam","type": "string"}
+    },
+    "Contig" : {
+        "name" : {"col": "name","type": "string"},
+        "taxonomy" : {"col": "taxonomy","type": "string"},
+        "GC per" : {"col": "gc_per","type" : "numeric"},
+        "chimerism" : {"col": "chimerism","type" :"numeric"},
+        "size" : {"col": "size","type": "numeric"},
+        "Genes Num" : {"col": "genes_num","type" : "numeric"}
+    },
+    "Bin" : {
+        "name" : {"col": "name","type": "string"},
+        "taxonomy" : {"col": "taxonomy","type": "string"},
+        "GC per" : {"col": "gc_per","type" : "numeric"},
+        "chimerism" : {"col": "chimerism","type" :"numeric"},
+        "size" : {"col": "size","type": "numeric"},
+        "Contig Num" : {"col": "contig_num","type" : "numeric"},
+        "method" : {"col": "method","type" : "string"},
+        "completeness" : {"col": "completeness","type" : "numeric"},
+        "contamination" : {"col": "contamination","type" : "numeric"},
+        "Strain Het" : {"col": "strain_het","type" : "numeric"}
+    }
+}

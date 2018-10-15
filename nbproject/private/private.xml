@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/Users/luis/Sites/game/application/helpers/search_helper.php</file>
+            <file>file:/Users/luis/Sites/game/application/data/search_model.json</file>
+            <file>file:/Users/luis/Sites/game/application/models/Project_model.php</file>
+            <file>file:/Users/luis/Sites/game/resources/js/game.js</file>
+            <file>file:/Users/luis/Sites/game/application/libraries/SearchQueryBuilder.php</file>
+            <file>file:/Users/luis/Sites/game/application/views/projects/search.php</file>
+            <file>file:/Users/luis/Sites/game/application/views/users/list.php</file>
+            <file>file:/Users/luis/Sites/game/application/controllers/Projects.php</file>
+            <file>file:/Users/luis/Sites/game/sql/game2.sql</file>
+            <file>file:/Users/luis/Sites/game/application/views/login.php</file>
+            <file>file:/Users/luis/Sites/game/application/views/projects/search_results.php</file>
+            <file>file:/Users/luis/Sites/game/application/config/config.php</file>
+            <file>file:/Users/luis/Sites/game/application/views/users/form.php</file>
+        </group>
+    </open-files>
+</project-private>
