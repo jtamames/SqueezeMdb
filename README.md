@@ -42,9 +42,9 @@ vi /var/www/html/SqueezeMdb/application/config/database.php
 #Line 80: Set 'password', to 'your_password' from the previous step.  
 
 ### Grant permissions.
-sudo chmod -R 755 /var/www/html/SqueezeMdb  
-sudo chown www-data /var/www/html/SqueezeMdb/application/temp/  
-sudo chown www-data /var/www/html/SqueezeMdb/application/cache/  
-sudo chmod 770 /var/www/html/SqueezeMdb/application/temp/  
-sudo chmod 770 /var/www/html/SqueezeMdb/application/cache/  
+chmod -R 755 /var/www/html/SqueezeMdb  
+chown www-data /var/www/html/SqueezeMdb/application/temp/  
+chown www-data /var/www/html/SqueezeMdb/application/cache/  
+chmod 770 /var/www/html/SqueezeMdb/application/temp/  
+chmod 770 /var/www/html/SqueezeMdb/application/cache/  
 
