@@ -34,7 +34,7 @@ git clone https://github.com/jtamames/SqueezeMdb
 cat /var/www/html/SqueezeMdb/sql/game.sql | mysql -u root -p squeezem  
 mysql -u root -p  
 CREATE USER 'your_user_name'@'localhost' IDENTIFIED BY 'your_password';  
-GRANT ALL PRIVILEGES ON squeezem.* TO 'nombre_usuario'@'localhost';  
+GRANT ALL PRIVILEGES ON squeezem.* TO 'your_user_name'@'localhost';  
 
 ### Configure SqueezeMdb
 vi /var/www/html/SqueezeMdb/application/config/database.php  
