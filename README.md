@@ -49,7 +49,7 @@ chmod 770 /var/www/html/SqueezeMdb/application/temp/
 chmod 770 /var/www/html/SqueezeMdb/application/cache/
 
 # Creating databases for your SqueezeM projects.
-1. Once installed the interface should be accesible at http:/localhost/SqueezeMdb/index.php/Login
+1. Once installed the interface should be accesible at http://localhost/SqueezeMdb/index.php/Login
 2. Login as the default admin user  
    User: squeezem@squeezem.com  
    Password: squeezem
