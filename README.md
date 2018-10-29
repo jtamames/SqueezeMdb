@@ -47,8 +47,8 @@ vi /var/www/html/SqueezeMdb/application/config/database.php
 
 ### Grant permissions.
 chmod -R 755 /var/www/html/SqueezeMdb  
-chown www-data /var/www/html/SqueezeMdb/application/temp/  
-chown www-data /var/www/html/SqueezeMdb/application/cache/  
+chown -R www-data:www-data /var/www/html/SqueezeMdb/application/temp/  
+chown www-data:www-data /var/www/html/SqueezeMdb/application/cache/  
 chmod -R 770 /var/www/html/SqueezeMdb/application/temp/  
 chmod 770 /var/www/html/SqueezeMdb/application/cache/
 
