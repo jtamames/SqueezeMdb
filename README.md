@@ -31,7 +31,7 @@ cd /var/www/html
 git clone https://github.com/jtamames/SqueezeMdb  
 
 ### Set up MySQL datababase.
-cat /var/www/SqueezeMdb/sql/game3.sql | mysql -u root -p squeezem  
+cat /var/www/html/SqueezeMdb/sql/game3.sql | mysql -u root -p squeezem  
 mysql -u root -p  
 CREATE USER 'your_user_name'@'localhost' IDENTIFIED BY 'your_password';  
 GRANT ALL PRIVILEGES ON squeezem.* TO 'your_user_name'@'localhost';  
