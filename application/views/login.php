@@ -10,6 +10,7 @@ $ci = get_instance();
         <h2>SqueezeM</h2>
     </div>
 </div>
+
 <?php 
 $error = validation_errors();
 if (isset($error) && strlen($error) > 0) { ?>

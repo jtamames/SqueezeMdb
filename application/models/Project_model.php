@@ -170,7 +170,7 @@ class Project_model extends CI_Model {
       $this->db->query
       } */
 
-    function insert_genes_batch($project_id, $samples, $genes) {
+    function insert_genes_batch($project_id, $samples, $genes, &$gene_cache) {
         $t0 = time();
         // Create the gene batch
         $gene_batch = array();
@@ -216,9 +216,61 @@ class Project_model extends CI_Model {
                 );
                 $sample_gene_batch[] = $sample_gene;
             }
+            $gene_cache[$gene->orf] = $gene_id;
+
             $gene_id++;
         }
         $this->db->insert_batch("Sample_Gene", $sample_gene_batch);
+        log_message('debug', "Inserted {$n} genes in " . (time() - $t0) . " segs");
+    }
+
+    /* function enable_constraints($enable) {
+      $this->db->query
+      } */
+
+    function insert_genes_ext($project_id, $samples, $genes) {
+        $t0 = time();
+        // Create the gene insert query
+        $g_insert = "INSERT INTO Gene (ORF, name, taxonomy, gc_per, contig_id, kegg_id, kegg_function, kegg_pathway, cog_id, cog_function, cog_pathway, Pfam, project_id) VALUES ";
+        $i = 0;
+        foreach ($genes as $gene) {
+            // get contig id
+            $this->db->cache_on();
+            $contig_id = $this->get_congig_id($project_id, $gene->contig);
+            $this->db->cache_off();
+            if ($contig_id === FALSE) {
+                log_message("error", "Contig name not found inserting gene: {$gene->contig}");
+                //return FALSE;
+            } else {
+                if ($i > 0) {
+                    $g_insert = $g_insert . ", ";
+                }
+                $g_insert = $g_insert . " ('" . $gene->orf . "', " . nullable($gene->name) . ", " . nullable($gene->taxonomy) . ", " .
+                        $gene->gc_per . ", $contig_id, " . nullable($gene->kegg_id) . ", " . nullable($gene->kegg_function) . ", " .
+                        nullable($gene->kegg_path) . " ," . nullable($gene->cog_id) . ", " . nullable($gene->cog_function) . ", " . nullable($gene->cog_path) . "," .
+                        nullable($gene->pfam) . ", $project_id)";
+            }
+            $i = $i + 1;
+        }
+        // Insert the batch of genes
+        $n = $this->db->query($g_insert);
+
+        $gene_id = $this->db->insert_id();
+        // generate the batch of Sample_gene
+        $sample_gene_batch = array();
+        $a_insert = "INSERT INTO Sample_Gene (gene_id, sample_id, raw_counts, norm_counts) VALUES ";
+        $i = 0;
+        foreach ($genes as $gene) {
+            foreach ($gene->abundances as $sample => $abundances) {
+                if ($i > 0) {
+                    $a_insert = $a_insert . ", ";
+                }
+                $a_insert = $a_insert . " ($gene_id, $samples[$sample], " . $abundances['raw'] . ", " . $abundances['norm'] . ")";
+                $i++;
+            }
+            $gene_id++;
+        }
+        $this->db->query($a_insert);
         log_message('debug', "Inserted {$n} genes in " . (time() - $t0) . " segs");
     }
 
@@ -432,6 +484,61 @@ class Project_model extends CI_Model {
         $n = $this->db->insert_batch("Sequence", $seqs_batch, NULL, sizeof($seqs));
     }
 
+    function insert_sequences_ext($project_id, $seqs) {
+        // Create the sequence batch
+        $seqs_batch = array();
+        $s_insert = "INSERT INTO Sequence (Gene_ID, sequence) VALUES ";
+        $i = 0;
+        foreach ($seqs as $seq) {
+            // get contig id
+            $this->db->cache_on();
+            $gene_id = $this->get_gene_id($project_id, $seq["gene"]);
+            $this->db->cache_off();
+            if ($gene_id === FALSE) {
+                log_message("error", "Gene name not found inserting sequece of gene: {$seq['gene']}");
+            } else {
+                if ($i > 0) {
+                    $s_insert = $s_insert . ", ";
+                }
+                $s_insert = $s_insert . "($gene_id, '" . $seq["sequence"] . "')";
+            }
+            $i++;
+        }
+        // Insert the batch of genes
+        $n = $this->db->query($s_insert);
+    }
+
+    function prepare_sequence_infile($project_id,$filehandler, $seqs, $gene_cache) {
+        $i = 0;
+        //$this->db->cache_on();
+        foreach ($seqs as $seq) {
+            // get contig id
+            if (isset($gene_cache) && $gene_cache != NULL && array_key_exists($seq["gene"], $gene_cache)) {
+                $gene_id = $gene_cache[$seq["gene"]];
+            } else {
+                $gene_id = $this->get_gene_id($project_id, $seq["gene"]);
+                log_message("DEBUG", "Gene cache missed: ".$seq["gene"]);
+            }
+            
+            if ($gene_id === FALSE) {
+                log_message("error", "Gene name not found inserting sequece of gene: {$seq['gene']}");
+            } else {
+                fwrite($filehandler, "NULL,'" . $seq["sequence"] . "',$gene_id\n");
+            }
+            $i++;
+        }
+        //$this->db->cache_off();
+
+        return $i;
+    }
+
+    function load_sequence_infile($filename) {
+        $this->db->query("LOAD DATA LOCAL INFILE '" . $filename . "' 
+            INTO TABLE  Sequence
+            FIELDS TERMINATED BY ','
+            LINES TERMINATED BY '\\n' ");
+    }
+
     function get_gene_id($project_id, $gene_orf) {
         $result = null;
         $query = $this->db->query('SELECT ge.ID
@@ -456,4 +563,26 @@ class Project_model extends CI_Model {
 	WHERE sam.project_id=?)", array($project_id));
     }
 
+    function get_max_sequence_id() {
+        $result = -1;
+        $query = $this->db->query('SELECT MAX(ID) as max_id FROM Sequence');
+        if ($query->num_rows() > 0) {
+            $aux = $query->result();
+            $result = $aux[0]->max_id;
+        } else {
+            $result = 0;
+        }
+        return $result;
+    }
+
+}
+
+function nullable($str) {
+    $result = "";
+    if (isset($str) && $str != NULL) {
+        $result = "'" . preg_replace("/'/i", "''", $str) . "'";
+    } else {
+        $result = "NULL";
+    }
+    return $result;
 }

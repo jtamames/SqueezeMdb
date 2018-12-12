@@ -77,7 +77,7 @@ class BinFileParser2 extends GameParser {
         $handle = fopen($filename, "rb");
         $num_samples = sizeof($samples);
         $bin_names = array();
-        while (($data = fgetcsv($handle, 3000, "\t")) !== FALSE) {
+        while (($data = fgetcsv($handle, 1000, "\t")) !== FALSE) {
             //$data = fgetcsv($handle, 1000, "\t");
             if ($row == 2) { // We ignore the first line, and the second one is the header
                 if ($this->validate_header($data, $samples) == FALSE) {

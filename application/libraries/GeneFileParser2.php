@@ -85,7 +85,7 @@ class GeneFileParser2 extends GameParser {
     
     function parse_header($filehandle, $samples) {
         $this->row = 0;
-        while (($data = fgetcsv($filehandle, 3000, "\t")) !== FALSE) {
+        while (($data = fgetcsv($filehandle, 1000, "\t")) !== FALSE) {
             $this->row++;
             if ((sizeof($data) > 0) && (strpos($data[0], "#") !== 0)) { // The first line is the header
                 return $this->validate_header($data, $samples);

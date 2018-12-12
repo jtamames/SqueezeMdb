@@ -73,7 +73,7 @@ class ContigFileParser2 extends GameParser {
         $this->row = 1;
         $handle = fopen($filename, "rb");
         $num_samples = sizeof($samples);
-        while (($data = fgetcsv($handle, 3000, "\t")) !== FALSE) {
+        while (($data = fgetcsv($handle, 1000, "\t")) !== FALSE) {
             if ($this->row == 1) { // The first line is the header
                 if ($this->validate_header($data, $samples) == FALSE) {
                     return FALSE;
