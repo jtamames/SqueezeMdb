@@ -531,8 +531,8 @@ $config['proxy_ips'] = '';
 |
 |
  */
-$config['upload_dir'] = '/var/www/html/SqueezeMdb/application/temp';
-$config['download_dir'] = '/var/www/html/SqueezeMdb/application/temp/downloads';
+$config['upload_dir'] = '/var/www/html/SqueezeMdb/application/temp/';
+$config['download_dir'] = '/var/www/html/SqueezeMdb/application/temp/downloads/';
 
 /*
 * Load My own MY_Controllers
