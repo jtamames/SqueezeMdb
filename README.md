@@ -74,5 +74,4 @@ chmod 770 /var/www/html/SqueezeMdb/application/cache/
     * Each subsequent line must contain the name of each ORF and its aminoacid sequence, separated by a tab.
         * Only the ORF name is needed. E.g. if the fasta header is *"4_2 LOTS OF EXTRA STUFF"* the ORF name would be only *"4_2"*.
 5. This new project can be assigned to any non-admin user/s. Once created, the project can be accessed by logging in as the non-admin user.
-6. Parsing all the files and creating the MiSQL database could take several minutes.
-7. Known bugs: sometimes the application will hang when parsing a sequences file. Should that happen, restart apache2 and try again without the sequences file. We're working on a fix :)
+6. Parsing all the files and creating the MySQL database could take several minutes (around 10 min for the results of the SqueezeMeta test files).
