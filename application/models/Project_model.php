@@ -121,9 +121,10 @@ class Project_model extends CI_Model {
         return $result;
     }
 
-    function insert_contigs($project_id, $samples, $contigs, $empty_bin_id) {
-        $this->db->trans_start();
+    function insert_contigs($project_id, $samples, $contigs, $empty_bin_id, $no_bins = FALSE) {
+        $this->db->trans_start(); //UNCOMMENTED BY FPS!
         $this->db->query('SET foreign_key_checks = 0');
+        
         foreach ($contigs as $contig) {
             $cont_array = array(
                 "name" => $contig->name
@@ -135,6 +136,7 @@ class Project_model extends CI_Model {
                 , "project_id" => $project_id
             );
             $this->db->insert("Contig", $cont_array);
+            
             $id = $this->db->insert_id();
             // Insert abundances
             foreach ($contig->abundances as $sample => $abundance) {
@@ -145,25 +147,31 @@ class Project_model extends CI_Model {
             }
             // Insert bin_contig realtionship
             if (!isset($contig->bins) || sizeof($contig->bins) == 0) {
+                //log_message('DEBUG', "::> Inserting contigs: ".$contig->name);
                 $this->db->insert("Bin_Contig", array("Bin_ID" => $empty_bin_id, "Contig_ID" => $id));
             } else {
-                $this->db->cache_on();
-
-                foreach ($contig->bins as $bin => $method) {
-                    $bin_id = $this->get_bin_id($project_id, $bin);
-                    if ($bin_id === FALSE) {
-                        return FALSE;
-                    }
-                    $bc = array("Bin_ID" => $bin_id,
-                        "Contig_ID" => $id,
-                        "Method" => $method);
-                    $this->db->insert("Bin_Contig", $bc);
+                if ($no_bins == TRUE) {
+                    $this->db->insert("Bin_Contig", array("Bin_ID" => $empty_bin_id, "Contig_ID" => $id));
                 }
-                $this->db->cache_off();
+                else {
+                    $this->db->cache_on();
+                    foreach ($contig->bins as $bin => $method) {
+                        $bin_id = $this->get_bin_id($project_id, $bin);
+                        if ($bin_id === FALSE) {
+                            log_message('ERROR', "Bin not found: $bin");
+                            return FALSE;
+                        }
+                        $bc = array("Bin_ID" => $bin_id,
+                            "Contig_ID" => $id,
+                            "Method" => $method);
+                        $this->db->insert("Bin_Contig", $bc);
+                    }
+                    $this->db->cache_off();
+                }
             }
         }
         $this->db->query('SET foreign_key_checks = 1');
-        $this->db->trans_complete();
+        $this->db->trans_complete(); //UNCOMMENTED BY FPS!!
     }
 
     /* function enable_constraints($enable) {
@@ -199,9 +207,12 @@ class Project_model extends CI_Model {
                     "project_id" => $project_id
                 );
             }
-            $gene_batch[] = $gene_arr;
+            if (isset($gene_arr) && $gene_arr != NULL) {
+                $gene_batch[] = $gene_arr;
+            }
         }
         // Insert the batch of genes
+        //if (isset($gene_batch) && sizeof($gene_batch) > 0) {
         $n = $this->db->insert_batch("Gene", $gene_batch, NULL, sizeof($genes));
         $gene_id = $this->db->insert_id();
         // generate the batch of Sample_gene

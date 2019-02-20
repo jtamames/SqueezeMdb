@@ -231,7 +231,7 @@ class SearchQueryBuilder {
                 $from = $from . " JOIN Bin_Contig ON (Bin_Contig.contig_id=Contig.id) JOIN Bin ON (Bin.id=Bin_Contig.bin_id) ";
             }
             if ($bin_counts == TRUE || $bin_coverage == TRUE) {
-                $from = $from . "JOIN (" . self::get_bin_abundances($project_id, $bin_coverage, $bin_counts, $samples) . ") babun ON (babun.bin_id=bin.id) ";
+                $from = $from . "JOIN (" . self::get_bin_abundances($project_id, $bin_coverage, $bin_counts, $samples) . ") babun ON (babun.bin_id=Bin.id) ";
             }
         }
         $query = $select . $from . $where . " {$group}";
@@ -340,7 +340,7 @@ class SearchQueryBuilder {
                 $sql = $sql . ", sum( if( sam.name = '" . $sample->name . "',sb.norm_counts,0)) as " . $sample->name . "_norm_counts";
             }
         }
-        $sql = $sql . " FROM Sample_bin sb JOIN Sample sam ON (sb.Sample_id=sam.id) WHERE sam.project_id=" . $project_id . " GROUP BY bin_id";
+        $sql = $sql . " FROM Sample_Bin sb JOIN Sample sam ON (sb.Sample_id=sam.id) WHERE sam.project_id=" . $project_id . " GROUP BY bin_id";
 
         return $sql;
     }
@@ -640,7 +640,7 @@ class SearchQueryBuilder {
                 $sql = $sql . ", sum( if( sam.name = '" . $sample->name . "',sb.norm_counts,0)) as " . $sample->name . "_norm_counts";
             }
         }
-        $sql = $sql . " FROM Sample_bin sb JOIN Sample sam ON (sb.Sample_id=sam.id)";
+        $sql = $sql . " FROM Sample_Bin sb JOIN Sample sam ON (sb.Sample_id=sam.id)";
         $sql = $sql . " WHERE sb.bin_id IN (" . self::buildSubquery($project_id, $tables, $oper, $clauses, $model, "bin") . ")";
         $sql = $sql . " GROUP BY bin_id";
 

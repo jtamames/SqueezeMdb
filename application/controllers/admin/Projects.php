@@ -113,6 +113,7 @@ class Projects extends MY_Admin_Controller {
         $t1 = time();
         log_message('debug', "::::::> Inserted samples in " . ($t1 - $t0) . " segs");
 
+        $no_bins = TRUE;
         // Load and validation of Bins file, if there is a bin file
         if ($_FILES["bin_file"]['name'] <> "") {
             if ($this->upload->do_upload('bin_file')) {
@@ -127,6 +128,7 @@ class Projects extends MY_Admin_Controller {
                 }
                 // Insert into database
                 $view_data['num_bins'] = sizeof($result);
+                $no_bins = FALSE;
                 $this->Project_model->insert_bins($project_id, $sample_ids, $result);
             }
         } else {
@@ -168,7 +170,7 @@ class Projects extends MY_Admin_Controller {
                 return;
             } else {
                 $num_contigs += sizeof($contigs);
-                $this->Project_model->insert_contigs($project_id, $sample_ids, $contigs, $empty_bin_id);
+                $this->Project_model->insert_contigs($project_id, $sample_ids, $contigs, $empty_bin_id, $no_bins);
                 $k += sizeof($contigs);
                 log_message("debug", "::::::> Inserted {$k} records...");
             }
