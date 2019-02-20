@@ -37,10 +37,10 @@ CREATE USER 'your_user_name'@'localhost' IDENTIFIED BY 'your_password';
 GRANT ALL PRIVILEGES ON squeezem.* TO 'your_user_name'@'localhost';  
 
 ### Configure SqueezeMdb
-vi /var/www/html/SqueezeMdb/application/config/config.php
-#Line 26: Set 'base_url' to <your.domain.name>/SqueezeMdb
-#The default is 'localhost/SqueezeMdb'. This will work if accessing from your computer, but not externally.
-#Change it to the full address of your computer to enable external access.
+vi /var/www/html/SqueezeMdb/application/config/config.php 
+#Line 26: Set 'base_url' to <your.domain.name>/SqueezeMdb 
+#The default is 'localhost/SqueezeMdb'. This will work if accessing from your computer, but not externally.    
+#Change it to the full address of your computer to enable external access.    
 vi /var/www/html/SqueezeMdb/application/config/database.php  
 #Line 79: Set 'username' to 'your_user_name' from the previous step.  
 #Line 80: Set 'password', to 'your_password' from the previous step.  
