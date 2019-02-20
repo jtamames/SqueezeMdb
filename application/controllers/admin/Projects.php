@@ -53,6 +53,7 @@ class Projects extends MY_Admin_Controller {
         $data = array();
 
         $name = $this->input->post("name");
+        log_message("DEBUG", "::::::::> Name: $name");
         $description = $this->input->post("description");
         $error_msg = "";
         if (!isset($name) || strlen($name) == 0) {
@@ -64,15 +65,11 @@ class Projects extends MY_Admin_Controller {
                 if ($_FILES["sample_file"]['name'] == "") {
                     $error_msg = "Sample file is mandatory";
                 } else {
-                    if ($_FILES["bin_file"]['name'] == "") {
-                        $error_msg = "Bin file is mandatory";
+                    if ($_FILES["contig_file"]['name'] == "") {
+                        $error_msg = "Contig file is mandatory";
                     } else {
-                        if ($_FILES["contig_file"]['name'] == "") {
-                            $error_msg = "Contig file is mandatory";
-                        } else {
-                            if ($_FILES["gene_file"]['name'] == "") {
-                                $error_msg = "Gene file is mandatory";
-                            }
+                        if ($_FILES["gene_file"]['name'] == "") {
+                            $error_msg = "Gene file is mandatory";
                         }
                     }
                 }
@@ -80,6 +77,7 @@ class Projects extends MY_Admin_Controller {
         }
         // Validate project users asignation
         $users_ids = $this->input->post("users");
+        log_message("DEBUG", "::::::::> ".sizeof($users_ids));
         if (!isset($users_ids) || sizeof($users_ids) == 0) {
             $error_msg = "Assign at least one user to the project";
         }
@@ -115,23 +113,27 @@ class Projects extends MY_Admin_Controller {
         $t1 = time();
         log_message('debug', "::::::> Inserted samples in " . ($t1 - $t0) . " segs");
 
-        // Load and validation of Bins file
-        if (!$this->upload->do_upload('bin_file')) {
-            $this->process_error($project_id, $this->upload->display_errors());
-            return;
+        $no_bins = TRUE;
+        // Load and validation of Bins file, if there is a bin file
+        if ($_FILES["bin_file"]['name'] <> "") {
+            if ($this->upload->do_upload('bin_file')) {
+                $data = $this->upload->data();
+                $this->load->library("BinFileParser2");
+                // Parse file
+                $parser = new BinFileParser2();
+                $result = $parser->parse($data['full_path'], $sample_ids);
+                if ($result === FALSE) {
+                    $this->process_error($project_id, "Error in bin file: " . $parser->get_error());
+                    return;
+                }
+                // Insert into database
+                $view_data['num_bins'] = sizeof($result);
+                $no_bins = FALSE;
+                $this->Project_model->insert_bins($project_id, $sample_ids, $result);
+            }
+        } else {
+            $view_data['num_bins'] = 0;
         }
-        $data = $this->upload->data();
-        $this->load->library("BinFileParser2");
-        // Parse file
-        $parser = new BinFileParser2();
-        $result = $parser->parse($data['full_path'], $sample_ids);
-        if ($result === FALSE) {
-            $this->process_error($project_id, "Error in bin file: " . $parser->get_error());
-            return;
-        }
-        // Insert into database
-        $view_data['num_bins'] = sizeof($result);
-        $this->Project_model->insert_bins($project_id,$sample_ids, $result);
         // Create empty bin
         $empty_bin_id = $this->Project_model->create_empty_bin($project_id, $sample_ids);
 
@@ -168,7 +170,7 @@ class Projects extends MY_Admin_Controller {
                 return;
             } else {
                 $num_contigs += sizeof($contigs);
-                $this->Project_model->insert_contigs($project_id, $sample_ids, $contigs, $empty_bin_id);
+                $this->Project_model->insert_contigs($project_id, $sample_ids, $contigs, $empty_bin_id, $no_bins);
                 $k += sizeof($contigs);
                 log_message("debug", "::::::> Inserted {$k} records...");
             }
@@ -201,6 +203,8 @@ class Projects extends MY_Admin_Controller {
         // Parse data
         $num_genes = 0;
         $k = 0;
+        $gene_cache = array();
+        //$batch_size = 100;
         do {
             $genes = null;
             unset($genes);
@@ -210,11 +214,15 @@ class Projects extends MY_Admin_Controller {
                 return;
             } else {
                 $num_genes += sizeof($genes);
-                $this->Project_model->insert_genes_batch($project_id, $sample_ids, $genes);
+                $this->Project_model->insert_genes_batch($project_id, $sample_ids, $genes, $gene_cache);
+                //$this->Project_model->insert_genes_ext($project_id, $sample_ids, $genes);
                 $k += sizeof($genes);
                 log_message("debug", "::::::> Inserted {$k} records...");
+                log_message("debug", "::::::> Gene cache size ".sizeof($gene_cache));
             }
         } while (($genes !== FALSE) && sizeof($genes) == $batch_size);
+
+        $t5 = time();
 
         $genes = NULL;
         unset($genes);
@@ -228,14 +236,20 @@ class Projects extends MY_Admin_Controller {
             $data = $this->upload->data();
             $this->load->library("SequenceFileParser");
             $parser = new SequenceFileParser();
-            // Gene files are really big, even bigger than conting files so we parse and insert the data in chunks
+            // Gene files are really big, even bigger than conting files so we parse and generate a file 
+            // to insert the data via LOAD DATA INFILE
             $seq_handle = fopen($data['full_path'], "rb");
+            // Open the file we are going to use to upload the data
+            $infile_name = $this->config->item('upload_dir').rand(0,1000000)."_seq.txt";
+            $infile = fopen($infile_name, "wb");
             if (($parser->parse_header($seq_handle) === FALSE)) {
                 $this->process_error($project_id, $parser->get_error());
                 return;
             }
             // Parse data
             $k = 0;
+            $batch_size = 8000;
+            log_message("debug", "::::::> Gene cache size2 ".sizeof($gene_cache));
             do {
                 $seqs = null;
                 unset($seqs);
@@ -244,15 +258,24 @@ class Projects extends MY_Admin_Controller {
                     $this->process_error($project_id, $parser->get_error());
                     return;
                 } else {
-                    $this->Project_model->insert_sequences_batch($project_id, $seqs);
+                    $this->Project_model->prepare_sequence_infile($project_id,$infile, $seqs, $gene_cache);
                     $k += sizeof($seqs);
-                    log_message("debug", "::::::> Inserted {$k} records...");
+                    log_message("DEBUG",">>>>>>>>>>>>> Prepared $k seqs");
                 }
             } while (($seqs !== FALSE) && sizeof($seqs) == $batch_size);
+            log_message("DEBUG",">>>>>>>>>>>>> TRAZA 8");
+            fclose($infile);
+            // Load infile
+            $this->Project_model->load_sequence_infile($infile_name);
+            log_message("DEBUG",">>>>>>>>>>>>> TRAZA 9");
+            // Delete aux load file
+            unlink($infile_name);
+            
         }
         $view_data['num_genes'] = $num_genes;
         $t4 = time();
-        log_message('debug', "::::::> Inserted genes in " . ($t4 - $t3) . " segs");
+        log_message('debug', "::::::> Inserted genes in " . ($t5 - $t3) . " segs");
+        log_message('debug', "::::::> Inserted seqs in " . ($t4 - $t5) . " segs");
         $view_data['time'] = ($t4 - $t0);
         fclose($gene_handle);
         $view_data['section'] = "projects";
@@ -281,8 +304,7 @@ class Projects extends MY_Admin_Controller {
         if (isset($project_id) && $project_id != NULL) {
             if ($edit == TRUE) {
                 $this->Project_model->delete_sequence($project_id);
-            }
-            else {
+            } else {
                 $this->Project_model->delete_project($project_id);
             }
         }
@@ -346,7 +368,7 @@ class Projects extends MY_Admin_Controller {
             $this->process_error(NULL, $error_msg);
             return;
         }
-        $this->Project_model->update_project($project_id,$name, $description);
+        $this->Project_model->update_project($project_id, $name, $description);
         // Check if we have to insert sequences
         if ($_FILES["seq_file"]['name'] <> "") {
             // If we already have sequences, we raise an error
@@ -389,9 +411,9 @@ class Projects extends MY_Admin_Controller {
         }
         // Update users assigned to the project
         $this->Project_model->update_project_users($project_id, $users_ids);
-        
-        $this->session->set_flashdata("info","Project {$name} updated sucessfuly");
+
+        $this->session->set_flashdata("info", "Project {$name} updated sucessfuly");
         redirect("admin/Projects/index");
     }
-    
+
 }

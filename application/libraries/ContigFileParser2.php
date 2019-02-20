@@ -9,9 +9,8 @@ ini_set("auto_detect_line_endings", true);
 class ContigFileParser2 extends GameParser {
 
     protected $row;
-    static protected $col_names = array("Contig ID", "Tax", "Chimerism", "Chimerism Rank", "GC perc", "Length", "Num genes", "Bin ID");
-    protected $col_names_idx = array("Contig ID" => -1, "Tax" => -1, "Chimerism" => -1
-        //,"Chimerism Rank"=>-1
+    static protected $col_names = array("Contig ID", "Tax", "Disparity", "GC perc", "Length", "Num genes", "Bin ID");
+    protected $col_names_idx = array("Contig ID" => -1, "Tax" => -1, "Disparity" => -1
         , "GC perc" => -1, "Length" => -1, "Num genes" => -1, "Bin ID" => -1);
     private $methods;
 
@@ -33,7 +32,7 @@ class ContigFileParser2 extends GameParser {
                 case "Length":
                 case "GC perc":
                 case "Num genes":
-                case "Chimerism":
+                case "Disparity":
                     $this->col_names_idx[$header[$i]] = $i;
                     break;
                 default:
@@ -73,7 +72,7 @@ class ContigFileParser2 extends GameParser {
         $this->row = 1;
         $handle = fopen($filename, "rb");
         $num_samples = sizeof($samples);
-        while (($data = fgetcsv($handle, 3000, "\t")) !== FALSE) {
+        while (($data = fgetcsv($handle, 1000, "\t")) !== FALSE) {
             if ($this->row == 1) { // The first line is the header
                 if ($this->validate_header($data, $samples) == FALSE) {
                     return FALSE;
@@ -83,7 +82,7 @@ class ContigFileParser2 extends GameParser {
                     $contig = new Contig();
                     $contig->name = $data[$this->col_names_idx["Contig ID"]];
                     $contig->taxonomy = $data[$this->col_names_idx["Tax"]];
-                    $contig->chimerism = $data[$this->col_names_idx["Chimerism"]];
+                    $contig->chimerism = $data[$this->col_names_idx["Disparity"]];
                     $contig->gc_per = $data[$this->col_names_idx["GC perc"]];
                     $contig->size = $data[$this->col_names_idx["Length"]];
                     $contig->genes_num = $data[$this->col_names_idx["Num genes"]];
@@ -161,7 +160,7 @@ class ContigFileParser2 extends GameParser {
                 $contig = new Contig();
                 $contig->name = $data[$this->col_names_idx["Contig ID"]];
                 $contig->taxonomy = $data[$this->col_names_idx["Tax"]];
-                $contig->chimerism = $data[$this->col_names_idx["Chimerism"]];
+                $contig->chimerism = $data[$this->col_names_idx["Disparity"]];
                 $contig->gc_per = $data[$this->col_names_idx["GC perc"]];
                 $contig->size = $data[$this->col_names_idx["Length"]];
                 $contig->genes_num = $data[$this->col_names_idx["Num genes"]];

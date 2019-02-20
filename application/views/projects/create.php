@@ -51,7 +51,7 @@ $ci = get_instance();
                 </div>
             </div>
             <div class="form-group">            
-                <label for="bin_file" class="col-sm-3 control-label">Bins file:</label>
+                <label for="bin_file" class="col-sm-3 control-label">Bins file: <small>(optional)</small></label>
                 <div class="col-sm-9">
                     <input type="file" class="form-control" name="bin_file" />
                 </div>

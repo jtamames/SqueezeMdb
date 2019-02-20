@@ -61,8 +61,8 @@ class GeneFileParser2 extends GameParser {
                         } else {
                             $this->samples_cols_match[$aux_sample]["norm"] = $i;
                         }
-                    } elseif (strpos($header[$i], "RAW COUNTS") === 0) {
-                        $aux_sample = substr($header[$i], 11);
+                    } elseif (strpos($header[$i], "RAW READ COUNT") === 0) {
+                        $aux_sample = substr($header[$i], 15);
                         if (!isset($sample[$aux_sample]) || $sample[$aux_sample] == NULL) {
                             $this->error_message = "Wrong header: Unknown sample name '{$aux_sample}' in column {$i}";
                             return FALSE;
@@ -85,7 +85,7 @@ class GeneFileParser2 extends GameParser {
     
     function parse_header($filehandle, $samples) {
         $this->row = 0;
-        while (($data = fgetcsv($filehandle, 3000, "\t")) !== FALSE) {
+        while (($data = fgetcsv($filehandle, 1000, "\t")) !== FALSE) {
             $this->row++;
             if ((sizeof($data) > 0) && (strpos($data[0], "#") !== 0)) { // The first line is the header
                 return $this->validate_header($data, $samples);

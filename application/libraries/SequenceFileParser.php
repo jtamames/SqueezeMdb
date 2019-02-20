@@ -1,4 +1,5 @@
 <?php
+
 require_once("./application/libraries/GameParser.php");
 
 if (!defined('BASEPATH'))
@@ -21,6 +22,7 @@ class SequenceFileParser extends GameParser {
     protected function validate_header($header, $samples) {
         $col_names = $this->get_column_names();
         $num_fixed_cols = sizeof($col_names);
+        log_message('DEBUG', "_____________> CNs: $num_fixed_cols Header: " . sizeof($header));
         if ($num_fixed_cols > sizeof($header)) {
             $this->error_message = "Wrong number of columns";
             return FALSE;
@@ -35,19 +37,19 @@ class SequenceFileParser extends GameParser {
         $this->error_message = "";
         return TRUE;
     }
-    
+
     function parse_header($filehandle) {
         $this->row = 0;
-        while (($data = fgetcsv($filehandle, 1000, "\t")) !== FALSE) {
+        while (($data = fgetcsv($filehandle, 7500, "\t")) !== FALSE) {
             $this->row++;
             if ((sizeof($data) > 0) && (strpos($data[0], "#") !== 0)) { // The first line is the header
                 return $this->validate_header($data, NULL);
-            }            
+            }
         }
         $this->error_message = "Error parsing Genes file: no header found";
         return FALSE;
     }
-    
+
     public function parse($filename) {
         $seqs = array();
         $handle = fopen($filename, "rb");
@@ -62,7 +64,7 @@ class SequenceFileParser extends GameParser {
                 $col_num += sizeof($this->sample_props_cols);
             } elseif ($header_read) {
                 if (sizeof($data) != $col_num) {
-                    $this->error_message = "Missing columns at row {$this->row}: ".$data[0]." Expected {$col_num} and found ".sizeof($data);
+                    $this->error_message = "Missing columns at row {$this->row}: " . $data[0] . " Expected {$col_num} and found " . sizeof($data);
                     return FALSE;
                 }
                 $seq = array("gene" => trim($data[0]), "sequence" => trim($data[1]));

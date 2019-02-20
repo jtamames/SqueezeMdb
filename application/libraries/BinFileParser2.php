@@ -9,10 +9,9 @@ ini_set("auto_detect_line_endings", true);
 class BinFileParser2 extends GameParser {
 
     static protected $col_names = array("Bin ID", "Method", "Tax", "Size", "GC perc", "Num contigs"
-        , "Chimerism", "Chimerism rank", "Completeness", "Contamination", "Strain Het");
+        , "Disparity", "Completeness", "Contamination", "Strain Het");
     protected $col_names_idx = array("Bin ID" => -1, "Method" => -1, "Tax" => -1
-        , "Size" => -1, "GC perc" => -1, "Num contigs" => -1, "Chimerism" => -1
-        //,"Chimerism rank"=>-1
+        , "Size" => -1, "GC perc" => -1, "Num contigs" => -1, "Disparity" => -1
         , "Completeness" => -1, "Contamination" => -1, "Strain Het" => -1);
 
     function __construct() {
@@ -32,8 +31,7 @@ class BinFileParser2 extends GameParser {
                 case "Size":
                 case "GC perc":
                 case "Num contigs":
-                case "Chimerism":
-                case "Chimerism rank":
+                case "Disparity":
                 case "Completeness":
                 case "Contamination":
                 case "Strain Het":
@@ -77,7 +75,7 @@ class BinFileParser2 extends GameParser {
         $handle = fopen($filename, "rb");
         $num_samples = sizeof($samples);
         $bin_names = array();
-        while (($data = fgetcsv($handle, 3000, "\t")) !== FALSE) {
+        while (($data = fgetcsv($handle, 0, "\t")) !== FALSE) {
             //$data = fgetcsv($handle, 1000, "\t");
             if ($row == 2) { // We ignore the first line, and the second one is the header
                 if ($this->validate_header($data, $samples) == FALSE) {
@@ -99,7 +97,7 @@ class BinFileParser2 extends GameParser {
                     $bin->size = trim($data[$this->col_names_idx["Size"]]);
                     $bin->gc_per = trim($data[$this->col_names_idx["GC perc"]]);
                     $bin->contig_num = trim($data[$this->col_names_idx["Num contigs"]]);
-                    $bin->chimerism = trim($data[$this->col_names_idx["Chimerism"]]);
+                    $bin->chimerism = trim($data[$this->col_names_idx["Disparity"]]);
                     $bin->completeness = trim($data[$this->col_names_idx["Completeness"]]);
                     $bin->contamination = trim($data[$this->col_names_idx["Contamination"]]);
                     $bin->strain_het = trim($data[$this->col_names_idx["Strain Het"]]);
