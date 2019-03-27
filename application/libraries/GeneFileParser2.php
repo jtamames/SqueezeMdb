@@ -53,7 +53,7 @@ class GeneFileParser2 extends GameParser {
                     log_message("DEBUG", "::> '".$header[$i]."' COL: {$i}");
                     break;
                 default:
-                    if (strpos($header[$i], "RPKM") === 0) {
+                    if (strpos($header[$i], "TPM") === 0) {
                         $aux_sample = substr($header[$i], 5);
                         if (!isset($sample[$aux_sample]) || $sample[$aux_sample] == NULL) {
                             $this->error_message = "Wrong header: Unknown sample name '{$aux_sample}' in column {$i}";
