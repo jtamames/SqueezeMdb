@@ -37,7 +37,7 @@ class GeneFileParser2 extends GameParser {
             switch ($header[$i]) {
                 case "ORF":
                 case "CONTIG ID":
-                case "LENGTH":
+                case "LENGTH AA":
                 case "GC perc":
                 case "GENNAME": 
                 case "TAX ORF":
