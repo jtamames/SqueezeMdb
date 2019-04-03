@@ -37,7 +37,7 @@ class ContigFileParser2 extends GameParser {
                     break;
                 default:
                     if (strpos($header[$i], "TPM") === 0) {
-                        $aux_sample = substr($header[$i], 5);
+                        $aux_sample = substr($header[$i], 4);
                         if (!isset($sample[$aux_sample]) || $sample[$aux_sample] == NULL) {
                             $this->error_message = "Wrong header: Unknown sample name '{$aux_sample}' in column {$i}";
                             return FALSE;
