@@ -58,7 +58,8 @@ chmod 770 /var/www/html/SqueezeMdb/application/cache/
    User: squeezem@squeezem.com  
    Password: squeezem
 3. Use the interface to create a non-admin user. Admin users can create new projects and new users. Non-admin users can access the project database and make queries.  
-4. In order to create a new project, first generate the required files by running the *make-SqueezeMdb-files.py* script from SqueezeMeta as following:
-`python3 <installpath>/SqueezeMeta/utils/make-SqueezeMdb-files.py <PROJECT_DIR> <OUTPUT_DIR>`, where PROJECT_DIR is the directory holding the SqueezeMeta run. This files can be added to the new project using the web interface.
+4. In order to create a new project, first generate the required files by running the *make-SqueezeMdb-files.py* script from SqueezeMeta as following:  
+`python3 <installpath>/SqueezeMeta/utils/make-SqueezeMdb-files.py <PROJECT_DIR> <OUTPUT_DIR>`,  
+where PROJECT_DIR is the directory holding the SqueezeMeta run. This files can be added to the new project using the web interface.
 5. This new project can be assigned to any non-admin user/s. Once created, the project can be accessed by logging in as the non-admin user.
 6. Parsing all the files and creating the MySQL database could take several minutes (around 10 min for the results of the SqueezeMeta test files).
