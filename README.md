@@ -13,12 +13,12 @@ apt-get update
 apt-get install -y php5.6 php5.6-mcrypt php5.6-mbstring php5.6-curl php5.6-cli php5.6-mysql php5.6-gd php5.6-intl php5.6-xsl php5.6-zip libapache2-mod-php5.6
 
 ### Configure PHP
-vi /etc/php/5.6/apache2/php.ini
-L372: set max_execution_time to 0
-L382: set max_input_time to -1
-L393: set memory_limit to 6G # smaller datasets should run with the default value of 128M.
-L660: set post_max_size to 10G # smaller datasets should run with 1200M or lower.
-L820: set upload_max_filesize to 10G # smaller datasets should run with 1200M or lower.
+vi /etc/php/5.6/apache2/php.ini  
+L372: set max_execution_time to 0  
+L382: set max_input_time to -1  
+L393: set memory_limit to 6G # smaller datasets should run with the default value of 128M.  
+L660: set post_max_size to 10G # smaller datasets should run with 1200M or lower.  
+L820: set upload_max_filesize to 10G # smaller datasets should run with 1200M or lower.  
 
 
 ### Restart apache
