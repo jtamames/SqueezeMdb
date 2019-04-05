@@ -56,7 +56,7 @@ chmod -R 770 /var/www/html/SqueezeMdb/application/temp/
 chmod 770 /var/www/html/SqueezeMdb/application/cache/
 
 ### Enabling server logging (if required for debugging purposes)
-chown www-data:www-data /var/www/html/SqueezeMdb/application/cache  
+chown www-data:www-data /var/www/html/SqueezeMdb/application/logs  
 chmod 770 /var/www/html/SqueezeMdb/application/logs # Logs will be stored in that folder.  
 
 # Creating databases for your SqueezeMeta projects.
