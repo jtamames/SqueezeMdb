@@ -26,14 +26,14 @@ a2dismod php5
 a2enmod php5.6  
 service apache2 restart  
 
-### Create MySQL database.
+### Create MySQL database
 mysql -u root -p -e "create database squeezem"  
 
-### Clone SqueezeMdb repository.
+### Clone SqueezeMdb repository
 cd /var/www/html  
 git clone https://github.com/jtamames/SqueezeMdb  
 
-### Set up MySQL datababase.
+### Set up MySQL datababase
 cat /var/www/html/SqueezeMdb/sql/game.sql | mysql -u root -p squeezem  
 mysql -u root -p  
 CREATE USER 'your_user_name'@'localhost' IDENTIFIED BY 'your_password';  
@@ -54,6 +54,9 @@ chown -R www-data:www-data /var/www/html/SqueezeMdb/application/temp/
 chown www-data:www-data /var/www/html/SqueezeMdb/application/cache/  
 chmod -R 770 /var/www/html/SqueezeMdb/application/temp/  
 chmod 770 /var/www/html/SqueezeMdb/application/cache/
+
+### Enabling server logging (if required for debugging purposes)
+chmod 770 /var/www/html/SqueezeMdb/application/logs # Logs will be stored in that folder.
 
 # Creating databases for your SqueezeMeta projects.
 1. Once installed the interface should be accesible at http://localhost/SqueezeMdb/index.php/Login
