@@ -1,4 +1,4 @@
-# Installation instructions (Assuming Ubuntu 14.01 or higher).
+# Installation instructions (Assuming Ubuntu 14.01 or higher)
 
 ### You need to be a super-user to do this!
 
@@ -59,7 +59,7 @@ chmod 770 /var/www/html/SqueezeMdb/application/cache/
 chown www-data:www-data /var/www/html/SqueezeMdb/application/logs  
 chmod 770 /var/www/html/SqueezeMdb/application/logs # Logs will be stored in that folder.  
 
-# Creating databases for your SqueezeMeta projects.
+# Creating databases for your SqueezeMeta projects
 1. Once installed the interface should be accesible at http://localhost/SqueezeMdb/index.php/Login
 2. Login as the default admin user  
    User: squeezem@squeezem.com  
