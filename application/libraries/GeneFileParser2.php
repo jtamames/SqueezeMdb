@@ -14,7 +14,7 @@ class GeneFileParser2 extends GameParser {
     );
     
     protected $col_names_idx = array(
-        "ORF"=>-1, "CONTIG ID"=>-1, "LENGTH"=>-1, "GC perc"=>-1, "GENNAME"=>-1, 
+        "ORF"=>-1, "CONTIG ID"=>-1, "LENGTH AA"=>-1, "GC perc"=>-1, "GENNAME"=>-1, 
         "TAX ORF"=>-1, "KEGG ID"=>-1, "KEGGFUN"=>-1, "KEGGPATH"=>-1, "COG ID"=>-1,
         "COGFUN"=>-1, "COGPATH"=>-1, "PFAM"=>-1
         //, "AASEQ"=>-1
@@ -37,7 +37,7 @@ class GeneFileParser2 extends GameParser {
             switch ($header[$i]) {
                 case "ORF":
                 case "CONTIG ID":
-                case "LENGTH":
+                case "LENGTH AA":
                 case "GC perc":
                 case "GENNAME": 
                 case "TAX ORF":
@@ -53,8 +53,8 @@ class GeneFileParser2 extends GameParser {
                     log_message("DEBUG", "::> '".$header[$i]."' COL: {$i}");
                     break;
                 default:
-                    if (strpos($header[$i], "RPKM") === 0) {
-                        $aux_sample = substr($header[$i], 5);
+                    if (strpos($header[$i], "TPM") === 0) {
+                        $aux_sample = substr($header[$i], 4);
                         if (!isset($sample[$aux_sample]) || $sample[$aux_sample] == NULL) {
                             $this->error_message = "Wrong header: Unknown sample name '{$aux_sample}' in column {$i}";
                             return FALSE;

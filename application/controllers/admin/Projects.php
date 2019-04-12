@@ -93,7 +93,7 @@ class Projects extends MY_Admin_Controller {
         $dir = $this->config->item('upload_dir');
         $config['upload_path'] = $dir;
         $config['allowed_types'] = '*';
-        $config['max_size'] = 500000;
+        #$config['max_size'] = 500000;
         $this->load->library('upload', $config);
 
         // Load and validation of Samples file
@@ -376,7 +376,7 @@ class Projects extends MY_Admin_Controller {
                 $dir = $this->config->item('upload_dir');
                 $config['upload_path'] = $dir;
                 $config['allowed_types'] = '*';
-                $config['max_size'] = 500000;
+                #$config['max_size'] = 500000;
                 $this->load->library('upload', $config);
 
                 if (!$this->upload->do_upload('seq_file')) {
