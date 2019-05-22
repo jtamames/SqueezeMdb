@@ -290,7 +290,7 @@ class Projects extends MY_Admin_Controller {
     function unique_name($name) {
         $result = TRUE;
         // Validates user credentials
-        if ($this->Projet_model->exists_project($name)) {
+        if ($this->Project_model->exists_project($name)) {
             $this->form_validation->set_message('unique_name', "Project name already exists");
             $result = FALSE;
         }
