@@ -56,7 +56,7 @@ class SequenceFileParser extends GameParser {
         $header_read = FALSE;
         $this->row = 0;
         $col_num = sizeof(self::$col_names);
-        while (($data = fgetcsv($handle, 20000, "\t")) !== FALSE) {
+        while (($data = fgetcsv($handle, 0, "\t")) !== FALSE) {
             $this->row++;
             if (!$header_read && (sizeof($data) > 0) && (strpos($data[0], "#") !== 0)) { // The first line is the header
                 $header_read = TRUE;
@@ -84,7 +84,7 @@ class SequenceFileParser extends GameParser {
         }
 
         $j = 0;
-        while ($j < $num_rows && (($data = fgetcsv($filehandle, 20000, "\t")) !== FALSE)) {
+        while ($j < $num_rows && (($data = fgetcsv($filehandle, 0, "\t")) !== FALSE)) {
             if (sizeof($data) > 0 && (strpos($data[0], "#") !== 0)) {
                 if (sizeof($data) != sizeof(self::$col_names)) {
                     $this->error_message = "Insuficient number of columns at row " . $this->row;
