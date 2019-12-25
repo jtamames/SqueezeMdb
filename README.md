@@ -40,8 +40,8 @@ CREATE USER 'your_user_name'@'localhost' IDENTIFIED BY 'your_password';
 GRANT ALL PRIVILEGES ON squeezem.* TO 'your_user_name'@'localhost';  
 
 ### Configure SqueezeMdb
-vi /var/www/html/SqueezeMdb/application/config/config.php 
-#Line 26: Set 'base_url' to <your.domain.name>/SqueezeMdb 
+vi /var/www/html/SqueezeMdb/application/config/config.php  
+#Line 26: Set 'base_url' to <your.domain.name>/SqueezeMdb   
 #The default is 'localhost/SqueezeMdb'. This will work if accessing from your computer, but not externally.    
 #Change it to the full address of your computer to enable external access.    
 vi /var/www/html/SqueezeMdb/application/config/database.php  
@@ -51,7 +51,7 @@ vi /var/www/html/SqueezeMdb/application/config/database.php
 ### Grant permissions.
 chmod -R 755 /var/www/html/SqueezeMdb  
 chown -R www-data:www-data /var/www/html/SqueezeMdb/application/temp/  
-chown www-data:www-data /var/www/html/SqueezeMdb/application/cache/  
+chown www-data:www-data /var/www/html/SqueezeMdb/application/cache/ 
 chmod -R 770 /var/www/html/SqueezeMdb/application/temp/  
 chmod 770 /var/www/html/SqueezeMdb/application/cache/
 
