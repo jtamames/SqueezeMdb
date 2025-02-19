@@ -1,3 +1,6 @@
+# This repository is no longer maintained. Most of the functionality here can be found in SQMtools (part of the standard SqueezeMeta distribution), and [SQMxplore](https://github.com/redondrio/SQMxplore/tree/master)
+
+
 # Installation instructions (Assuming Ubuntu 14.01 or higher)
 
 ### You need to be a super-user to do this!
